@@ -3,6 +3,7 @@ import pandas as pd
 import time
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo  # ✅ Добавлено
 import ta
 
 # === Загрузка конфигурации ===
@@ -77,9 +78,11 @@ def get_current_price(symbol):
     except:
         return "n/a"
 
+# === Основной цикл ===
 while True:
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    message = f"📊 *Мониторинг RSI & ATR%*\n🕒 Время: `{now}`\n\n"
+    # 🕒 Время по Киеву
+    now = datetime.now(ZoneInfo("Europe/Kyiv")).strftime("%Y-%m-%d %H:%M")
+    message = f"📊 *Мониторинг RSI & ATR%*\n🕒 Время (Киев): `{now}`\n\n"
 
     for symbol in symbols:
         price = get_current_price(symbol)
@@ -98,6 +101,5 @@ while True:
         message += "\n"
 
     send_telegram_message(message)
-    print(f"[{datetime.now()}] Сообщение отправлено. Ожидание 15 минут...")
+    print(f"[{datetime.now(ZoneInfo('Europe/Kyiv'))}] Сообщение отправлено. Ожидание 15 минут...")
     time.sleep(15 * 60)
-
